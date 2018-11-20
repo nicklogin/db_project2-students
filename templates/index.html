@@ -1,0 +1,93 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Cтраница администрирования базы данных</title>
+        <style>
+            table, th, td {
+                border: 1px solid black;
+            }
+            span {
+                cursor:pointer;
+                color:blue;
+                text-decoration:underline;
+            }
+        </style>
+        <script>
+            var currentTable = "students";
+
+            function displayTable(tableName) {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        currentTable = tableName;
+                        document.getElementById("mainTable").innerHTML = this.responseText;
+                    }
+                };
+                xhttp.open("GET", "?action=getTable&table="+tableName, true);
+                xhttp.send();
+            };
+
+            function deleteRow(rowId) {
+                // alert("You're trying to delete a row");
+                deleteValue = confirm("Вы действительно хотите удалить запись c id="+rowId+"?");
+                if (deleteValue == true) {
+                    var deleteRequest = new XMLHttpRequest();
+                    deleteRequest.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            document.getElementById(rowId).remove();
+                            alert("Запись успешно удалена из базы");
+                        }
+                    };
+                    deleteRequest.open("GET", "?action=deleteRow&table="+currentTable+"&id="+rowId);
+                    deleteRequest.send();
+                }
+            };
+
+            function changeData(rowId) {
+                window.location.assign("/alterRecord?table="+currentTable+"&id="+rowId);
+            };
+
+            function addRecord() {
+                window.location.assign("/createRecord?table="+currentTable);
+            };
+
+        </script>
+    </head>
+    <body>
+        Выберите таблицу:<br />
+        <select id="table-selector" onchange="displayTable(this.value)">
+            {% for i in table_options %}
+            <option> {{ i }} </option>
+            {% endfor %}
+        </select> <br />
+        <table id="mainTable">
+            <tr>
+            {% for col_name in col_names %}
+                <td>{{ col_name }}</td>
+            {% endfor %}
+            </tr>
+            {% for row in selected_table %}
+            <tr id="{{ row[0] }}">
+                {% for cell in row %}
+                <td>{{ cell }}</td>
+                {% endfor %}
+                <td><a href="#" onclick="changeData({{ row[0] }})">Изменить</a></td>
+                <td><span onclick="deleteRow({{ row[0] }})">Удалить</span></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br />
+        <span onclick="addRecord()">Добавить запись</span><br />
+        <a href="/studentstats">Смотреть ведомость оценок</a><br />
+        Поиск: <br />
+        <form action="/search" method="POST">
+            <input type="text" name="query">
+            <select name="category">
+                {% for option in search_options %}
+                    <option> {{ option }} </option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Искать!">
+        </form><br />
+    </body>
+</html>

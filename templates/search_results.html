@@ -1,0 +1,38 @@
+<html>
+<head>
+    <style>
+        th, td {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+Поиск: <br />
+<form action="/search" method="POST">
+    <input type="text" name="query">
+    <select name="category">
+        {% for option in search_options %}
+            <option> {{ option }} </option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Искать!">
+</form><br />
+
+<table>
+    <tr>
+    {% for col_name in col_names %}
+        <th> {{ col_name }} </th>
+    {% endfor %}
+    </tr>
+    {% for row in result %}
+    <tr>
+        {% for cell in row %}
+        <td> {{ cell }} </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+<br />
+<a href="/"> Вернуться на главную </a>
+</body>
+</html>

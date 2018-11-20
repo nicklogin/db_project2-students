@@ -1,0 +1,15 @@
+<!-- Сделать так, чтобы для каждого ряда записывался его id; -->
+<tr>
+    {% for col_name in col_names %}
+        <td>{{ col_name }}</td>
+    {% endfor %}
+</tr>
+{% for row in selected_table %}
+    <tr id="{{ row[0] }}">
+        {% for cell in row %}
+        <td>{{ cell }}</td>
+        {% endfor %}
+        <td><a href="#" onclick="changeData({{ row[0] }})">Изменить</a></td>
+        <td><span onclick="deleteRow({{ row[0] }})">Удалить</span></td>
+    </tr>
+{% endfor %}

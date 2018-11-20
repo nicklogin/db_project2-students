@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <script>
+            function sendForm() {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4) {
+                        if (this.status == 200) {
+                            alert("Изменения успешно записаны в базу данных");
+                        }
+                        else {
+                            alert("Ошибка! Не удалось изменить данные :(");
+                        }
+                    }
+                };
+                {% if record %}
+                xhttp.open("POST", "/alterRecord", true);
+                {% else %}
+                xhttp.open("POST", "/createRecord", true);
+                {% endif %}
+                var fData = new FormData(document.getElementById("dataForm"));
+                xhttp.send(fData);
+            }
+        </script>
+    </head>
+    <body>
+        <form id = "dataForm" method="POST">
+            <input type="hidden" name="table" value="{{ table }}">
+            {% if record %}
+                {% for key in record %}
+                {{ key }}: <input type="text" name="{{ key }}" value="{{ record[key] }}"><br />
+                {% endfor %}
+            {% elif fields %}
+                id: <input type="text" name="id" value="{{ id_value }}"><br />
+                {% for field in fields %}
+                {{ field }}: <input type="text" name="{{ field }}"><br />
+                {% endfor %}
+            {% endif %}
+        </form>
+        <button onclick="sendForm()">Записать изменения</button><br />
+        <a href="/">Вернуться к странице просмотра и редактирования базы данных</a>
+    </body>
+</html>

@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <title>Ведомость оценок</title>
+        <style>
+            table, th, td {
+                border: 1px solid black;
+            }
+        </style>
+        <h1>Ведомость оценок</h1>
+    </head>
+    <body>
+        <table>
+            <tr>
+                {% for field in fields %}
+                    <td> {{ field }} </td>
+                {% endfor %}
+            </tr>
+            {% for row in table %}
+                <tr>
+                    {% for cell in row %}
+                        <td> {{ cell }} </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+        <br />
+        <a href="/">Вернуться на главную</a>
+    </body>
+</html>
